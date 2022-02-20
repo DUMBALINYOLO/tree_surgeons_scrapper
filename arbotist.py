@@ -179,7 +179,8 @@ class TreeSurgeonSpider(webdriver.Chrome):
                                 By.XPATH,
                                 "//*[@id='fmndetail']/table/tbody/tr/td"
                             )
-            detail['name'] = name_element.get_attribute("innerHTML")
+            uncleaned_name = name_element.get_attribute("innerHTML")
+            detail['name'] = parse_single_content(uncleaned_name)
         except NoSuchElementException:
             detail['name'] = None
 
@@ -191,7 +192,9 @@ class TreeSurgeonSpider(webdriver.Chrome):
                             )
             
             uncleaned_address = address_element.get_attribute("innerHTML")
-            detail['address'] = parse_single_content(uncleaned_address)
+            
+            unstripped = parse_single_content(uncleaned_address)
+            detail['address'] = unstripped.strip()
         except NoSuchElementException:
             detail['address'] = None
 
@@ -227,7 +230,7 @@ class TreeSurgeonSpider(webdriver.Chrome):
 
         print(arbotist_urls)
 
-        workbook = xlsxwriter.Workbook('arbotists.xlsx')
+        workbook = xlsxwriter.Workbook('arbotists_.xlsx')
         work_sheet = workbook.add_worksheet("ARBOTISTS")
         work_sheet.write('A1', 'NAME')
         work_sheet.write('B1', 'ADDRESS')
